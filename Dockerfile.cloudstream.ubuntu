@@ -7,8 +7,8 @@
 #
 #####
 
-FROM ubuntu:trusty
-MAINTAINER Ward Fisher <wfisher@ucar.edu>
+FROM ubuntu
+LABEL org.unidata.image.authors="Ward Fisher <wfisher@ucar.edu>"
 ENV CLOUDSTREAM_VERSION development
 
 # Set the following, required for IDV 5.5+
@@ -25,7 +25,7 @@ RUN apt-get update && apt-get -y upgrade
 # Install bare minimum set of tools.
 ###
 
-RUN apt-get install -y nano curl x11vnc xvfb xinit git python zip xdg-utils firefox python3-tk python3-pexpect fluxbox x11-apps swisswatch man mesa-utils sudo bzip2 net-tools
+RUN apt-get install -y nano curl x11vnc xvfb xinit git python3-dev zip xdg-utils firefox python3-tk python3-pexpect fluxbox x11-apps swisswatch man mesa-utils sudo bzip2 net-tools
 
 ###
 # Set up a non-root user account.
@@ -83,7 +83,7 @@ ENV WPORT 6080
 
 EXPOSE ${WPORT}
 
-RUN https://github.com/novnc/noVNC.git
+RUN git clone https://github.com/novnc/noVNC.git
 RUN cp /home/${CUSER}/noVNC/vnc.html /home/${CUSER}/noVNC/index.html
 
 ##

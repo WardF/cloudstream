@@ -110,7 +110,8 @@ export DISPLAY=localhost:1
 ##
 cd /home/${CUSER}/noVNC/utils && openssl req -new -x509 -days 365 -nodes -out self.pem -keyout self.pem -batch
 cd ~
-/home/${CUSER}/noVNC/utils/launch.sh ${SSLOP} --vnc 127.0.0.1:5901 &
+#/home/${CUSER}/noVNC/utils/launch.sh ${SSLOP} --vnc 127.0.0.1:5901 &
+/home/${CUSER}/noVNC/utils/novnc_proxy ${SSLOP} --vnc 127.0.0.1:5901 &
 
 echo ""
 echo ""
