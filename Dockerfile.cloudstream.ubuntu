@@ -3,7 +3,7 @@
 # Used to generate the 'unidata/cloudstream' docker container.
 # Visit us on the web at http://www.unidata.ucar.edu
 #
-# Copyright Unidata 2015 - 2018
+# Copyright Unidata 2015 - 2022
 #
 #####
 
@@ -83,7 +83,7 @@ ENV WPORT 6080
 
 EXPOSE ${WPORT}
 
-RUN git clone git://github.com/kanaka/noVNC
+RUN https://github.com/novnc/noVNC.git
 RUN cp /home/${CUSER}/noVNC/vnc.html /home/${CUSER}/noVNC/index.html
 
 ##
