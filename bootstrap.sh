@@ -100,7 +100,7 @@ if [ "x${SHARED}" == "xTRUE" ]; then
     export SHARESTRING="-shared"
 fi
 
-xinit -- /usr/bin/Xvfb :1 -screen 0 $SIZEW\x$SIZEH\x$CDEPTH &
+sudo xinit -- /usr/bin/Xvfb :1 -screen 0 $SIZEW\x$SIZEH\x$CDEPTH &
 sleep 5
 
 export DISPLAY=localhost:1
