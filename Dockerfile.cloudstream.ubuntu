@@ -91,14 +91,6 @@ RUN cp /home/${CUSER}/noVNC/vnc.html /home/${CUSER}/noVNC/index.html
 ##
 RUN cd /home/${CUSER}/noVNC/utils && git clone https://github.com/kanaka/websockify
 
-
-###
-# Install rclone from prebuilt binary.
-###
-USER root
-RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip && unzip -j -d /usr/bin rclone-current-linux-amd64.zip
-USER ${CUSER}
-
 ###
 # We can parameterize screen dimensions
 # with the following variables.
@@ -122,6 +114,7 @@ ENV SHARESTRING --noshared
 COPY start.sh ${HOME}/
 COPY bootstrap.sh ${HOME}/
 COPY Dockerfile.cloudstream.ubuntu ${HOME}/
+COPY bootstrap_ref.sh ${HOME}/
 COPY Dockerfile.template ${HOME}/
 COPY README.md ${HOME}/
 COPY COPYRIGHT_CLOUDSTREAM.md ${HOME}/
