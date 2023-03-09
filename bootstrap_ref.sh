@@ -8,7 +8,7 @@ readonly G_LOG_E='[ERROR]'
 
 main() {
     launch_xvfb
-    launch_window_manager
+    #launch_window_manager
     run_vnc_server
     run_novnc
 }
@@ -56,10 +56,10 @@ launch_window_manager() {
 run_vnc_server() {
     local passwordArgument='-nopw'
 
-    if [ -n "${VNC_SERVER_PASSWORD}" ]
+    if [ -n "${USEPASS}" ]
     then
         local passwordFilePath="${HOME}/x11vnc.pass"
-        if ! x11vnc -storepasswd "${VNC_SERVER_PASSWORD}" "${passwordFilePath}"
+        if ! x11vnc -storepasswd "${USEPASS}" "${passwordFilePath}"
         then
             echo "${G_LOG_E} Failed to store x11vnc password."
             exit 1
@@ -88,6 +88,80 @@ control_c() {
 }
 
 trap control_c SIGINT SIGTERM SIGHUP
+
+###
+# If HELP environmental variable is non-empty,
+# cat the README file and exit.
+#
+# Start with checking for the CLOUDSTREAM readme, which is default.
+# Then, assuming it will be named README[.md/.txt], cat other
+# README file which might have been copied in. Finally, print
+# out the version file.
+#
+###
+if [ "x${HELP}" != "x" ]; then
+
+    if [ -e "/home/${CUSER}/CLOUDSTREAM_README.md" ]; then
+        cat "/home/${CUSER}/CLOUDSTREAM_README.md"
+    fi
+    echo ""
+
+    if [ -e "$README_FILE" ]; then
+      cat "$README_FILE"
+    fi
+    echo ""
+
+    if [ "/home/${CUSER}/VERSION.md" ]; then
+        cat "/home/${CUSER}/VERSION.md"
+    fi
+
+    exit
+fi
+
+
+if [ "x${COPYRIGHT}" != "x" ]; then
+  if [ -e "/home/${CUSER}/COPYRIGHT_CLOUDSTREAM.md" ]; then
+    cat "/home/${CUSER}/COPYRIGHT_CLOUDSTREAM.md"
+  fi
+  echo ""
+
+  if [ -e "${COPYRIGHT_FILE}" ]; then
+    cat "${COPYRIGHT_FILE}"
+  fi
+
+  exit
+
+fi
+
+###
+# Print out the version file.
+###
+if [ "x${VERSION}" != "x" ]; then
+    cat VERSION.md
+    echo ""
+    exit
+fi
+
+###
+# Determine if we're using SSL Only.
+###
+SSLOP=""
+if [ "x${SSLONLY}" == "xTRUE" ]; then
+    SSLOP="--ssl-only"
+fi
+
+echo ""
+echo ""
+echo "================================"
+cat VERSION.md
+echo "================================"
+echo ""
+echo ""
+
+if [ -f /home/${CUSER}/start.sh ]; then
+    /home/${CUSER}/start.sh
+fi
+
 
 main
 
