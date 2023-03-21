@@ -39,7 +39,7 @@ RUN apt-get update && apt-get -y upgrade
 # Begin user-configurable options.
 ###############################################################################
 
-MAINTAINER FirstName LastName <email.address@domain.name>
+LABEL org.unidata.image.authors="Firstname Lastname email.address@domain.name"
 
 ####
 # APPLICATION_NAME - Name of the application.
@@ -202,14 +202,6 @@ USER ${CUSER}
 # command script.
 ###
 
-RUN mkdir -p ~/.vnc
-RUN echo '  /usr/bin/x11vnc -display :1 -autoport 5901 -repeat -forever &' > ~/.xinitrc.nopassword
-#RUN echo '/usr/bin/startlxde' >> ~/.xinitrc.nopassword
-#RUN echo '/usr/sbin/gdm3' >> ~/.xinitrc.nopassword
-
-RUN echo '  /usr/bin/x11vnc -display :1 -autoport 5901 -repeat -forever -usepw &' > ~/.xinitrc.password
-#RUN echo '/usr/bin/startlxde' >> ~/.xinitrc.password
-#RUN echo '/usr/sbin/gdm3' >> ~/.xinitrc.nopassword
 
 ###
 # Override default windows session geometry and color depth.

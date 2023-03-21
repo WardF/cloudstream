@@ -113,7 +113,7 @@ ENV SHARESTRING --noshared
 ###
 COPY start.sh ${HOME}/
 COPY bootstrap.sh ${HOME}/
-COPY Dockerfile.cloudstream.ubuntu ${HOME}/
+COPY Dockerfile.cloudstream ${HOME}/
 COPY bootstrap_ref.sh ${HOME}/
 COPY Dockerfile.template ${HOME}/
 COPY README.md ${HOME}/
@@ -144,4 +144,5 @@ USER ${CUSER}
 # and execute the start.sh file if present.
 ###
 
-CMD /home/${CUSER}/bootstrap.sh
+#CMD /home/${CUSER}/bootstrap.sh
+CMD /home/${CUSER}/bootstrap_ref.sh

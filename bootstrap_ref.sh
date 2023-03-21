@@ -14,6 +14,9 @@ main() {
 }
 
 launch_xvfb() {
+    echo ""
+    echo "Launching XVFB"
+    echo ""
     # Set defaults if the user did not specify envs.
     export DISPLAY=${XVFB_DISPLAY:-:1}
     local screen=${XVFB_SCREEN:-0}
@@ -36,6 +39,10 @@ launch_xvfb() {
 }
 
 launch_window_manager() {
+    echo ""
+    echo "Launching Window Manager"
+    echo ""
+
     local timeout=${XVFB_TIMEOUT:-5}
 
     # Start and wait for either fluxbox to be fully up or we hit the timeout.
@@ -54,6 +61,9 @@ launch_window_manager() {
 }
 
 run_vnc_server() {
+    echo ""
+    echo "Launching VNC Server"
+    echo ""
     local passwordArgument='-nopw'
 
     if [ -n "${USEPASS}" ]
@@ -75,11 +85,14 @@ run_vnc_server() {
 }
 
 run_novnc() {
+    echo ""
+    echo "Launching noVNC"
+    echo ""
     cd $HOME/noVNC/utils && openssl req -new -x509 -days 365 -nodes -out self.pem -keyout self.pem -batch
     cd $HOME
     $HOME/noVNC/utils/novnc_proxy --vnc 127.0.0.1:5900 &
 
-    wait $!
+
 }
 
 control_c() {
@@ -158,11 +171,15 @@ echo "================================"
 echo ""
 echo ""
 
+main
+
 if [ -f /home/${CUSER}/start.sh ]; then
+    echo ""
+    echo "start.sh script detected.  Running start.sh"
+    echo ""
     /home/${CUSER}/start.sh
 fi
 
-
-main
+wait $!
 
 exit
