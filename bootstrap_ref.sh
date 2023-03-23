@@ -7,6 +7,7 @@ readonly G_LOG_W='[WARN]'
 readonly G_LOG_E='[ERROR]'
 
 main() {
+    sudo rm -rf /tmp/.X1-lock
     launch_xvfb
     #launch_window_manager
     run_vnc_server
