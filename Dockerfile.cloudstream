@@ -10,6 +10,7 @@
 FROM ubuntu
 LABEL org.unidata.image.authors="Ward Fisher <wfisher@ucar.edu>"
 ENV CLOUDSTREAM_VERSION development
+ENV BUNDLEDIR /bundle
 
 # Set the following, required for IDV 5.5+
 # ENV MESA_GL_VERSION_OVERRIDE 3.1
@@ -19,13 +20,13 @@ ENV CLOUDSTREAM_VERSION development
 #####
 
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get -y upgrade
+RUN apt update && apt -y upgrade
 
 ###
 # Install bare minimum set of tools.
 ###
 
-RUN apt-get install -y nano curl x11vnc xvfb xinit git python3-dev zip xdg-utils python3-tk python3-pexpect fluxbox x11-apps swisswatch man mesa-utils sudo bzip2 net-tools xterm
+RUN apt install -y nano curl x11vnc xvfb xinit git python3-dev zip xdg-utils python3-tk python3-pexpect fluxbox x11-apps swisswatch man mesa-utils sudo bzip2 net-tools xterm 
 
 ###
 # Set up a non-root user account.
@@ -39,6 +40,9 @@ RUN adduser ${CUSER} sudo
 # randomize it for now.
 RUN echo "${CUSER}:${CUSERPWORD}${RANDOM} " | chpasswd
 RUN echo "${CUSER} ALL=NOPASSWD: ALL" >> /etc/sudoers
+RUN mkdir -p ${BUNDLEDIR}
+RUN chown -R ${CUSER}:${CUSER} ${BUNDLEDIR}
+RUN chmod -R 755 ${BUNDLEDIR}
 
 #####
 # Switch to the non-root user,
@@ -82,14 +86,14 @@ ENV WPORT 6080
 
 EXPOSE ${WPORT}
 
-RUN git clone https://github.com/novnc/noVNC.git
-RUN cp /home/${CUSER}/noVNC/vnc.html /home/${CUSER}/noVNC/index.html
+RUN git clone https://github.com/novnc/noVNC.git ${BUNDLEDIR}/noVNC
+RUN cp ${BUNDLEDIR}/noVNC/vnc.html ${BUNDLEDIR}/noVNC/index.html
 
 ##
 # Added an ssl-only option to a fork of noVNC,
 # use the forked version until it is merged into official repo.
 ##
-RUN cd /home/${CUSER}/noVNC/utils && git clone https://github.com/kanaka/websockify
+RUN cd ${BUNDLEDIR}/noVNC/utils && git clone https://github.com/kanaka/websockify
 
 ###
 # We can parameterize screen dimensions
@@ -111,30 +115,31 @@ ENV SHARESTRING --noshared
 ###
 # Copy over a few files.
 ###
-COPY start.sh ${HOME}/
-COPY bootstrap.sh ${HOME}/
-COPY Dockerfile.cloudstream ${HOME}/
-COPY bootstrap_ref.sh ${HOME}/
-COPY Dockerfile.template ${HOME}/
-COPY README.md ${HOME}/
-COPY COPYRIGHT_CLOUDSTREAM.md ${HOME}/
-COPY RELEASE_NOTES.md ${HOME}/
-COPY QUICKSTART.md ${HOME}/
+COPY start.sh ${BUNDLEDIR}/
+COPY bootstrap.sh ${BUNDLEDIR}/
+COPY Dockerfile.cloudstream ${BUNDLEDIR}/
+COPY bootstrap_ref.sh ${BUNDLEDIR}/
+COPY Dockerfile.template ${BUNDLEDIR}/
+COPY README.md ${BUNDLEDIR}/
+COPY COPYRIGHT_CLOUDSTREAM.md ${BUNDLEDIR}/
+COPY RELEASE_NOTES.md ${BUNDLEDIR}/
+COPY QUICKSTART.md ${BUNDLEDIR}/
 
-RUN  mv README.md CLOUDSTREAM_README.md
-ADD examples ${HOME}/examples
+RUN  mv ${BUNDLEDIR}/README.md ${BUNDLEDIR}/CLOUDSTREAM_README.md
+ADD examples ${BUNDLEDIR}/examples
 
 ###
 # Create a version file.
 ###
 ENV VERSION_FILE VERSION.md
-RUN echo "CloudStream Version: "$CLOUDSTREAM_VERSION" $(date)" > $VERSION_FILE
+RUN echo "CloudStream Version: "$CLOUDSTREAM_VERSION" $(date)" > ${BUNDLEDIR}/$VERSION_FILE
 
 ###
 # A little housekeeping.
 ###
 
 USER root
+RUN rm -rf /var/lib/apt/lists/*
 RUN chown -R ${CUSER}:${CUSER} ${HOME}
 USER ${CUSER}
 
@@ -145,4 +150,4 @@ USER ${CUSER}
 ###
 
 #CMD /home/${CUSER}/bootstrap.sh
-CMD /home/${CUSER}/bootstrap_ref.sh
+CMD ${BUNDLEDIR}/bootstrap_ref.sh

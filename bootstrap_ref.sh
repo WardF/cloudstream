@@ -20,7 +20,7 @@ launch_xvfb() {
     # Set defaults if the user did not specify envs.
     export DISPLAY=${XVFB_DISPLAY:-:1}
     local screen=${XVFB_SCREEN:-0}
-    local resolution=${XVFB_RESOLUTION:-1280x1024x24}
+    local resolution=${XVFB_RESOLUTION:-${SIZEW}x${SIZEH}x24}
     local timeout=${XVFB_TIMEOUT:-5}
 
     # Start and wait for either Xvfb to be fully up or we hit the timeout.
@@ -88,9 +88,9 @@ run_novnc() {
     echo ""
     echo "Launching noVNC"
     echo ""
-    cd $HOME/noVNC/utils && openssl req -new -x509 -days 365 -nodes -out self.pem -keyout self.pem -batch
+    cd ${BUNDLEDIR}/noVNC/utils && openssl req -new -x509 -days 365 -nodes -out self.pem -keyout self.pem -batch
     cd $HOME
-    $HOME/noVNC/utils/novnc_proxy --vnc 127.0.0.1:5900 &
+    ${BUNDLEDIR}/noVNC/utils/novnc_proxy --vnc 127.0.0.1:5900 &
 
 
 }
@@ -114,8 +114,8 @@ trap control_c SIGINT SIGTERM SIGHUP
 ###
 if [ "x${HELP}" != "x" ]; then
 
-    if [ -e "/home/${CUSER}/CLOUDSTREAM_README.md" ]; then
-        cat "/home/${CUSER}/CLOUDSTREAM_README.md"
+    if [ -e "${BUNDLEDIR}/CLOUDSTREAM_README.md" ]; then
+        cat "${BUNDLEDIR}/CLOUDSTREAM_README.md"
     fi
     echo ""
 
@@ -124,8 +124,8 @@ if [ "x${HELP}" != "x" ]; then
     fi
     echo ""
 
-    if [ "/home/${CUSER}/VERSION.md" ]; then
-        cat "/home/${CUSER}/VERSION.md"
+    if [ "${BUNDLEDIR}/VERSION.md" ]; then
+        cat "${BUNDLEDIR}/VERSION.md"
     fi
 
     exit
@@ -133,8 +133,8 @@ fi
 
 
 if [ "x${COPYRIGHT}" != "x" ]; then
-  if [ -e "/home/${CUSER}/COPYRIGHT_CLOUDSTREAM.md" ]; then
-    cat "/home/${CUSER}/COPYRIGHT_CLOUDSTREAM.md"
+  if [ -e "${BUNDLEDIR}/COPYRIGHT_CLOUDSTREAM.md" ]; then
+    cat "${BUNDLEDIR}/COPYRIGHT_CLOUDSTREAM.md"
   fi
   echo ""
 
@@ -173,11 +173,11 @@ echo ""
 
 main
 
-if [ -f /home/${CUSER}/start.sh ]; then
+if [ -f ${BUNDLEDIR}/start.sh ]; then
     echo ""
     echo "start.sh script detected.  Running start.sh"
     echo ""
-    /home/${CUSER}/start.sh
+    ${BUNDLEDIR}/start.sh
 fi
 
 wait $!
